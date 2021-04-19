@@ -26,7 +26,7 @@ Vagrant.configure("2") do |config|
 
       # Add disks
       for i in 0..2 do
-        filename = "./disks/disk#{i}.vmdk"
+        filename = "disk#{i}.vmdk"
           unless File.exist?(filename)
             prov.customize ["createmedium", "disk", "--filename", filename, "--size", 10 * 1024]
             prov.customize ["storageattach", :id, "--storagectl","SATA Controller", "--port", i + 1, "--device", 0, "--type", "hdd", "--medium", filename]
