@@ -1,36 +1,41 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
+require_relative 'provisioning/vbox.rb'
+VBoxUtils.check_version('6.1.32')
+Vagrant.require_version ">= 2.2.19"
 
-# Max. 15 characters for OMV hostname
-omv_hostname = "xxx-aisi2021"
-client_hostname = "xxx-aisi2021-client"
+# OMV hostname limited to 15 characters when using SMB/CIFS
+OMV_HOSTNAME = "xxx-aisi2122"
+CLIENT_HOSTNAME = "xxx-aisi2122-cli"
 
 Vagrant.configure("2") do |config|
   # Configure hostmanager plugin
   config.hostmanager.enabled = true
   config.hostmanager.manage_host = true
   config.hostmanager.manage_guest = true
-  config.hostmanager.ignore_private_ip = false
 
-  config.vm.define "omv" do |omv|
-    omv.vm.box = "debian/buster64"
-    omv.vm.hostname = omv_hostname
-    omv.vm.define omv_hostname
-    omv.vm.network "private_network", ip: "192.172.16.25"
+  config.vm.define "omv", primary: true do |omv|
+    omv.vm.box = "debian/bullseye64"
+    omv.vm.box_version = "11.20211230.1"
+    omv.vm.box_check_update = false
+    omv.vm.hostname = OMV_HOSTNAME
+    omv.vm.network "private_network", ip: "192.172.16.25", virtualbox__intnet: true
+    omv.vm.network "forwarded_port", guest: 80, host: 9090
     omv.vm.synced_folder ".", "/vagrant", type: "virtualbox"
 
     omv.vm.provider :virtualbox do |prov|
-      prov.name = omv_hostname
-      prov.cpus = 1
+      prov.gui = false
+      prov.name = "AISI-P5-OMV"
+      prov.cpus = 2
       prov.memory = 2048
 
       # Add disks
       for i in 0..2 do
-        filename = "disk#{i}.vmdk"
+        filename = "./disks/disk#{i}.vdi"
           unless File.exist?(filename)
-            prov.customize ["createmedium", "disk", "--filename", filename, "--size", 10 * 1024]
-            prov.customize ["storageattach", :id, "--storagectl","SATA Controller", "--port", i + 1, "--device", 0, "--type", "hdd", "--medium", filename]
+            prov.customize ["createmedium", "disk", "--filename", filename, "--format", "vdi", "--size", 10 * 1024]
           end
+	  prov.customize ["storageattach", :id, "--storagectl","SATA Controller", "--port", i + 1, "--device", 0, "--type", "hdd", "--medium", filename]
       end
     end
 
@@ -38,16 +43,16 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.define "client" do |client|
-    client.vm.box = "hashicorp/bionic64"
-    client.vm.hostname = client_hostname
-    client.vm.define client_hostname
-    client.vm.network "private_network", ip: "192.172.16.30"
-    client.vm.network "forwarded_port", guest: 80, host: 8080, host_ip: "127.0.0.1"
+    client.vm.box = "ubuntu/focal64"
+    client.vm.box_version = "20220322.0.0"
+    client.vm.box_check_update = false
+    client.vm.hostname = CLIENT_HOSTNAME
+    client.vm.network "private_network", ip: "192.172.16.30", virtualbox__intnet: true
     client.vm.synced_folder ".", "/vagrant", type: "virtualbox"
 
     client.vm.provider "virtualbox" do |prov|
       prov.gui = true
-      prov.name = client_hostname
+      prov.name = "AISI-P5-client"
       prov.cpus = 1
       prov.memory = 2048
     end

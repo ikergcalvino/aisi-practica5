@@ -4,7 +4,7 @@
 #
 # @license   http://www.gnu.org/licenses/gpl.html GPL Version 3
 # @author    Volker Theile <volker.theile@openmediavault.org>
-# @copyright Copyright (c) 2009-2021 Volker Theile
+# @copyright Copyright (c) 2009-2022 Volker Theile
 #
 # openmediavault is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@
 set -e
 
 # Append user 'vagrant' to group 'ssh', otherwise the user is not allowed
-# to log in via SSH
+# to log in via SSH.
 usermod --groups ssh --append vagrant
 
 export LANG=C.UTF-8
@@ -36,7 +36,7 @@ apt-key add "/etc/apt/trusted.gpg.d/openmediavault-archive-keyring.asc"
 
 # Install openmediavault
 cat <<EOF > /etc/apt/sources.list.d/openmediavault.list
-deb http://packages.openmediavault.org/public usul main
+deb http://packages.openmediavault.org/public shaitan main
 EOF
 
 apt-get update
