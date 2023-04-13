@@ -10,7 +10,7 @@ class VagrantPlugins::ProviderVirtualBox::Action::Network
   end
 end
 
-CLIENT_HOSTNAME = "xxx-aisi2223-cli"
+CLIENT_HOSTNAME = "idc-aisi2223-cli"
 
 Vagrant.configure("2") do |config|
   # Configure hostmanager and vbguest plugins
