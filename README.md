@@ -30,8 +30,8 @@
 
 ## Ejercicio 5
 
-![El usuario idc-aisi2223-rw tiene acceso a la carpeta compartida y puede crear nuevo contenido en ella](/img/ej5-cap1.png)
+![Permisos de idc-aisi2223-rw, idc-aisi2223-ro y vagrant](/img/ej5-cap1.png)
 
-![El usuario idc-aisi2223-ro tiene acceso a la carpeta compartida, pero no puede crear nuevo contenido](/img/ej5-cap2.png)
+![Información de file-root1](/img/ej5-cap2.png)
 
-![El usuario vagrant no tiene acceso a la carpeta compartida](/img/ej5-cap3.png)
+![Información de file-root2, file-root3 y file-vagrant](/img/ej5-cap3.png)
